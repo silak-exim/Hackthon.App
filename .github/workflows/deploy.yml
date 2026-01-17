@@ -40,5 +40,4 @@ jobs:
           context: ./FoundryDataUploader
           push: true
           tags: |
-            eximhackathon2026.azurecr.io/foundrydatauploader:latest
             eximhackathon2026.azurecr.io/foundrydatauploader:${{ github.sha }}

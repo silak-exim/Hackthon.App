@@ -27,7 +27,7 @@ services:
 
   # Reference to backend API (if running together)
   foundry-api:
-    image: foundrydatauploader-foundrydatauploader:latest
+    image: eximhackathon2026.azurecr.io/foundrydatauploader:${IMAGE_TAG:-latest}
     container_name: foundry-api
     ports:
       - "5000:8080"
