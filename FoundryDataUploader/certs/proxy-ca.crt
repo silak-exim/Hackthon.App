@@ -1,0 +1,12 @@
+# Placeholder - Replace with actual corporate proxy CA certificate
+# This is a dummy file to allow Docker build to succeed
+# 
+# To get the real certificate:
+# 1. Export CA cert from your browser or Windows Certificate Store
+# 2. Replace this file with the actual .crt content
+#
+# Example format (Base64 encoded X.509):
+# -----BEGIN CERTIFICATE-----
+# MIIDrzCCApegAwIBAgIQCDvgVpBCRrGhdWrJWZHHSjANBgkqhkiG9w0BAQUFADBh
+# ... (certificate content) ...
+# -----END CERTIFICATE-----

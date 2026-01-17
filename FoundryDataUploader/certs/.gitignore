@@ -1,0 +1,9 @@
+# SSL Certificate files - Do not commit to version control
+*.pfx
+*.pem
+*.key
+*.p12
+
+# Keep proxy-ca.crt placeholder but ignore if it contains real cert
+# Uncomment the line below after adding real certificate
+# proxy-ca.crt

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  foundrydatauploader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: foundry-data-uploader
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:8081;http://+:8080
+      # SSL Certificate Configuration
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certs/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD:-DevPassword123!}
+      # Azure Foundry Configuration
+      - AzureFoundry__Endpoint=${AZURE_FOUNDRY_ENDPOINT:-https://exim-hackathon-group4-resource.services.ai.azure.com/api/projects/exim-hackathon-group4}
+      - AzureFoundry__AgentName=${AZURE_FOUNDRY_AGENT_NAME:-sila-wf}
+      - AzureFoundry__AgentVersion=${AZURE_FOUNDRY_AGENT_VERSION:-21}
+      # Azure AI Foundry Configuration
+      - AzureAIFoundry__Endpoint=${AZURE_AI_FOUNDRY_ENDPOINT}
+      - AzureAIFoundry__ApiKey=${AZURE_AI_FOUNDRY_API_KEY}
+      - AzureAIFoundry__ModelName=${AZURE_AI_FOUNDRY_MODEL_NAME:-gpt-4o}
+      # Azure Search Configuration
+      - AzureSearch__Endpoint=${AZURE_SEARCH_ENDPOINT:-https://data4exim.search.windows.net}
+      - AzureSearch__ApiKey=${AZURE_SEARCH_API_KEY}
+      - AzureSearch__IndexName=${AZURE_SEARCH_INDEX_NAME:-data4exim}
+    volumes:
+      - uploads-data:/app/Uploads
+    restart: unless-stopped
+    networks:
+      - foundry-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  uploads-data:
+    driver: local
+
+networks:
+  foundry-network:
+    driver: bridge
