@@ -44,17 +44,17 @@ jobs:
 
       # ... ต่อจากขั้นตอน Build and push Docker image ...
 
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy to Azure Container Apps
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          imageToDeploy: eximhackathon2026.azurecr.io/hackathon/app-api:${{ github.sha }}
-          containerAppName: container-api
-          resourceGroup: ContainerApps
+#      - name: Azure Login
+#        uses: azure/login@v2
+#        with:
+#          creds: ${{ secrets.AZURE_CREDENTIALS }}
+#
+#      - name: Deploy to Azure Container Apps
+#        uses: azure/container-apps-deploy-action@v1
+#        with:
+#          imageToDeploy: eximhackathon2026.azurecr.io/hackathon/app-api:${{ github.sha }}
+#          containerAppName: container-api
+#          resourceGroup: ContainerApps
 
           # หากต้องการระบุไฟล์ YAML สำหรับการตั้งค่าอื่นๆ (optional)
           # yamlConfigPath: .azure/container-app-config.yaml
