@@ -1,0 +1,44 @@
+name: Deploy to Azure Container Registry
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'FoundryDataUploader/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: App Settings Variable Substitution
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'FoundryDataUploader/appsettings.Production.json'
+        env:
+          AzureAIFoundry.ApiKey: ${{ secrets.AZURE_AI_FOUNDRY_API_KEY }}
+          AzureSearch.ApiKey: ${{ secrets.AZURE_SEARCH_API_KEY }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Azure Container Registry Login
+        uses: azure/docker-login@v2
+        with:
+          login-server: eximhackathon2026.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./FoundryDataUploader
+          push: true
+          tags: |
+            eximhackathon2026.azurecr.io/foundrydatauploader:latest
+            eximhackathon2026.azurecr.io/foundrydatauploader:${{ github.sha }}
