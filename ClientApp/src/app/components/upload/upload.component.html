@@ -1,0 +1,104 @@
+<div class="upload-container">
+  <h2>📄 อัพโหลดและวิเคราะห์เอกสาร</h2>
+  
+  <div class="drop-zone" 
+       (dragover)="onDragOver($event)" 
+       (drop)="onDrop($event)"
+       [class.has-files]="selectedFiles.length > 0">
+    <div class="drop-content">
+      <span class="icon">📄</span>
+      <p>ลากไฟล์มาวางที่นี่ หรือ</p>
+      <label class="file-input-label">
+        เลือกไฟล์
+        <input type="file" multiple (change)="onFileSelected($event)" accept=".txt,.md,.json,.csv,.pdf,.doc,.docx">
+      </label>
+      <small>รองรับไฟล์ .txt, .md, .json, .csv, .pdf, .doc, .docx</small>
+    </div>
+  </div>
+
+  @if (selectedFiles.length > 0) {
+    <div class="selected-files">
+      <h4>ไฟล์ที่เลือก ({{ selectedFiles.length }} ไฟล์)</h4>
+      <ul>
+        @for (file of selectedFiles; track file.name; let i = $index) {
+          <li>
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size">{{ file.size | fileSize }}</span>
+            <button class="remove-btn" (click)="removeFile(i)">✕</button>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+
+  <button class="upload-btn" 
+          (click)="upload()" 
+          [disabled]="isUploading || selectedFiles.length === 0">
+    @if (isUploading) {
+      <span class="spinner"></span> กำลังอัพโหลด...
+    } @else {
+      อัพโหลดเอกสาร
+    }
+  </button>
+
+  @if (message) {
+    <div class="message" [class.success]="messageType === 'success'" [class.error]="messageType === 'error'">
+      {{ message }}
+    </div>
+  }
+
+  @if (uploadedDocs.length > 0) {
+    <div class="uploaded-section">
+      <h3>📚 เอกสารที่อัพโหลด</h3>
+      
+      <!-- Summary Type Selector -->
+      <div class="summary-options">
+        <label>เลือกรูปแบบการสรุป:</label>
+        <select [(ngModel)]="selectedSummaryType">
+          @for (type of summaryTypes; track type.value) {
+            <option [value]="type.value">{{ type.icon }} {{ type.label }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="documents-grid">
+        @for (doc of uploadedDocs; track trackByDocId) {
+          <div class="document-card">
+            <div class="doc-header">
+              <span class="doc-icon">📄</span>
+              <div class="doc-info">
+                <h4>{{ doc.title || doc.fileName }}</h4>
+                <small>{{ doc.fileName }} • {{ doc.size | fileSize }}</small>
+              </div>
+              <button class="delete-btn" (click)="deleteDocument(doc)" title="ลบเอกสาร">🗑️</button>
+            </div>
+
+            <div class="doc-actions">
+              <button class="summarize-btn" 
+                      (click)="summarizeDocument(doc)" 
+                      [disabled]="isSummarizing[doc.id]">
+                @if (isSummarizing[doc.id]) {
+                  <span class="spinner"></span> กำลังสรุป...
+                } @else {
+                  🤖 สรุปด้วย AI
+                }
+              </button>
+            </div>
+
+            @if (summaryResults[doc.id]) {
+              <div class="summary-result">
+                <div class="summary-header">
+                  <h5>✨ {{ getSummaryTypeLabel(summaryResults[doc.id].summaryType) }}</h5>
+                  <button class="close-summary" (click)="clearSummary(doc.id)">✕</button>
+                </div>
+                <div class="summary-content">
+                  {{ summaryResults[doc.id].summary }}
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

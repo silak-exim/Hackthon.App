@@ -1,0 +1,445 @@
+// EXIM Bank Dashboard Styles - New Layout with Chart Priority
+
+.dashboard {
+  padding: 0;
+}
+
+// Hero Section
+.hero {
+  background: linear-gradient(135deg, #0a0a0a 0%, #2d2d2d 100%);
+  padding: 48px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: -40px -40px 24px -40px;
+  border-radius: 0 0 24px 24px;
+
+  .hero-content {
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: #c9a962;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+    }
+
+    .hero-subtitle {
+      color: #cccccc;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+  }
+
+  .hero-time {
+    text-align: right;
+
+    .time {
+      display: block;
+      font-size: 36px;
+      font-weight: 300;
+      color: #ffffff;
+      font-family: 'Courier New', monospace;
+    }
+
+    .date {
+      display: block;
+      font-size: 14px;
+      color: #cccccc;
+      margin-top: 4px;
+    }
+  }
+}
+
+// Live Badge
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #dc2626;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+// Card Base
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f5f5f5;
+
+    h2 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      &::before {
+        content: '';
+        width: 4px;
+        height: 18px;
+        background: #c9a962;
+        border-radius: 2px;
+      }
+    }
+
+    .view-all {
+      font-size: 13px;
+      color: #c9a962;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+// ==========================================
+// MAIN CHART - PRIORITY #1 (LARGEST)
+// ==========================================
+.main-chart-card {
+  margin-bottom: 24px;
+
+  .card-header {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    
+    h2 {
+      color: #ffffff;
+      font-size: 18px;
+      
+      &::before {
+        background: #c9a962;
+      }
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .currency-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      label {
+        color: #cccccc;
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      select {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #c9a962;
+        background: #2d2d2d;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        min-width: 140px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: #d4b872;
+          background: #3d3d3d;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #c9a962;
+          box-shadow: 0 0 0 2px rgba(201, 169, 98, 0.3);
+        }
+
+        option {
+          background: #2d2d2d;
+          color: #ffffff;
+          padding: 8px;
+        }
+      }
+    }
+  }
+
+  .main-chart-container {
+    height: 550px;
+    padding: 0;
+    background: #ffffff;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  }
+}
+
+// ==========================================
+// SECONDARY GRID
+// ==========================================
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+// Market Card
+.market-card {
+  .market-widget-container {
+    height: 400px;
+    padding: 0;
+
+    .tradingview-market-widget {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+// Services Card
+.services-card {
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 20px 24px;
+  }
+
+  .service-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: #c9a962;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(201, 169, 98, 0.15);
+    }
+
+    .service-icon {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .service-info {
+      display: flex;
+      flex-direction: column;
+
+      strong {
+        font-size: 14px;
+        color: #1a1a1a;
+      }
+
+      small {
+        font-size: 11px;
+        color: #666666;
+        margin-top: 4px;
+      }
+    }
+  }
+}
+
+// ==========================================
+// NEWS FROM TRADINGVIEW - FULL WIDTH
+// ==========================================
+.news-card {
+  .news-widget-container {
+    height: 400px;
+    padding: 0;
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  }
+}
+
+// Keep old styles for backwards compatibility
+.announcements-card {
+  .announcements-list {
+    padding: 16px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .announcement-item {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    background: #f9f9f9;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: #c9a962;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .announcement-badge {
+      flex-shrink: 0;
+
+      .badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+
+        &.important {
+          background: #fef2f2;
+          color: #dc2626;
+        }
+
+        &.new {
+          background: #f0fdf4;
+          color: #16a34a;
+        }
+
+        &.notice {
+          background: #fefce8;
+          color: #ca8a04;
+        }
+      }
+    }
+
+    .announcement-content {
+      .announcement-date {
+        display: block;
+        font-size: 11px;
+        color: #666666;
+        margin-bottom: 4px;
+      }
+
+      .announcement-title {
+        margin: 0;
+        font-size: 14px;
+        color: #1a1a1a;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+// ==========================================
+// TRADINGVIEW WIDGET OVERRIDES
+// ==========================================
+:host ::ng-deep {
+  .tradingview-widget-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .tradingview-widget-container__widget {
+    height: 100%;
+    width: 100%;
+  }
+
+  iframe {
+    border: none !important;
+  }
+}
+
+// ==========================================
+// RESPONSIVE
+// ==========================================
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .announcements-card {
+    .announcements-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+    gap: 24px;
+    padding: 32px 20px;
+    margin: -20px -20px 20px -20px;
+
+    .hero-time {
+      text-align: center;
+    }
+
+    .hero-content h1 {
+      font-size: 24px;
+    }
+  }
+
+  .main-chart-card {
+    .main-chart-container {
+      height: 400px;
+    }
+  }
+
+  .market-card {
+    .market-widget-container {
+      height: 350px;
+    }
+  }
+
+  .services-card {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .announcements-card {
+    .announcements-list {
+      grid-template-columns: 1fr;
+    }
+  }
+}

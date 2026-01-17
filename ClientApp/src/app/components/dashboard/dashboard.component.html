@@ -1,0 +1,72 @@
+<div class="dashboard">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>ยินดีต้อนรับสู่ EXIM BANK</h1>
+      <p>ธนาคารเพื่อการส่งออกและนำเข้าแห่งประเทศไทย</p>
+      <p class="hero-subtitle">พันธมิตรทางการเงินที่พร้อมสนับสนุนธุรกิจของคุณสู่ตลาดโลก</p>
+    </div>
+    <div class="hero-time">
+      <span class="time">{{ currentTime() | date:'HH:mm:ss' }}</span>
+      <span class="date">{{ currentTime() | date:'d MMMM yyyy' }}</span>
+    </div>
+  </section>
+
+  <!-- Main Chart Section - PRIORITY #1 -->
+  <section class="card main-chart-card">
+    <div class="card-header">
+      <h2>📈 กราฟอัตราแลกเปลี่ยน Real-time</h2>
+      <div class="header-controls">
+        <div class="currency-selector">
+          <label>เลือกคู่เงิน:</label>
+          <select [ngModel]="selectedCurrency()" (ngModelChange)="updateSelectedCurrency($event)">
+            @for (pair of currencyPairs; track trackBySymbol($index, pair)) {
+              <option [value]="pair.symbol">{{ pair.flag }} {{ pair.name }}</option>
+            }
+          </select>
+        </div>
+        <span class="live-badge">🔴 LIVE</span>
+      </div>
+    </div>
+    <div class="main-chart-container">
+      <iframe 
+        [src]="mainChartUrl()"
+        frameborder="0"
+        allowfullscreen
+        style="width: 100%; height: 100%;">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Market Overview Widget - Full Width -->
+  <section class="card market-card">
+    <div class="card-header">
+      <h2>📊 ภาพรวมตลาด</h2>
+      <span class="live-badge">🔴 LIVE</span>
+    </div>
+    <div class="market-widget-container">
+      <iframe 
+        [src]="marketOverviewUrl"
+        frameborder="0"
+        allowfullscreen
+        style="width: 100%; height: 100%;">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Forex Cross Rates from TradingView - Full Width -->
+  <section class="card news-card">
+    <div class="card-header">
+      <h2>💱 อัตราแลกเปลี่ยนสกุลเงินหลัก</h2>
+      <span class="live-badge">🔴 LIVE</span>
+    </div>
+    <div class="news-widget-container">
+      <iframe 
+        [src]="forexCrossRatesUrl"
+        frameborder="0"
+        allowfullscreen
+        style="width: 100%; height: 100%;">
+      </iframe>
+    </div>
+  </section>
+</div>

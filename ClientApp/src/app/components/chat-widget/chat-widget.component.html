@@ -1,0 +1,85 @@
+<!-- Floating Chat Button -->
+<button class="chat-toggle" (click)="toggleChat()" [class.open]="isOpen()">
+  @if (isOpen()) {
+    <span class="icon close">✕</span>
+  } @else {
+    <span class="icon chat">💬</span>
+    @if (unreadCount() > 0) {
+      <span class="badge">{{ unreadCount() }}</span>
+    }
+  }
+</button>
+
+<!-- Chat Window -->
+<div class="chat-window" [class.open]="isOpen()">
+  <div class="chat-header">
+    <div class="header-info">
+      <div class="avatar">🏦</div>
+      <div class="header-text">
+        <h3>EXIM Bank AI</h3>
+        <span class="status">
+          <span class="status-dot"></span>
+          ออนไลน์
+        </span>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="action-btn" (click)="clearChat()" title="ล้างการสนทนา">🗑️</button>
+      <button class="action-btn" (click)="toggleChat()" title="ปิด">✕</button>
+    </div>
+  </div>
+
+  <div class="messages-container">
+    @if (!hasMessages()) {
+      <div class="welcome-message">
+        <div class="welcome-icon">🏦</div>
+        <h4>สวัสดีค่ะ!</h4>
+        <p>ยินดีต้อนรับสู่ EXIM Bank AI Assistant</p>
+        <p class="sub">สอบถามข้อมูลบริการธนาคาร หรือต้องการความช่วยเหลือ พิมพ์ข้อความได้เลยค่ะ</p>
+        <div class="quick-actions">
+          <button (click)="sendQuickMessage('อัตราแลกเปลี่ยนวันนี้')">💱 อัตราแลกเปลี่ยน</button>
+          <button (click)="sendQuickMessage('สินเชื่อส่งออก')">📦 สินเชื่อส่งออก</button>
+          <button (click)="sendQuickMessage('บริการ L/C')">📄 Letter of Credit</button>
+        </div>
+      </div>
+    }
+
+    @for (msg of messages(); track trackByTimestamp($index, msg)) {
+      <div class="message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+        @if (msg.role === 'assistant') {
+          <div class="msg-avatar">🏦</div>
+        }
+        <div class="msg-content">
+          <div class="msg-text" [innerHTML]="msg.content"></div>
+          <div class="msg-time">{{ msg.timestamp | date:'HH:mm' }}</div>
+        </div>
+      </div>
+    }
+
+    @if (isLoading()) {
+      <div class="message assistant">
+        <div class="msg-avatar">🏦</div>
+        <div class="msg-content">
+          <div class="typing">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="input-area">
+    <input 
+      type="text"
+      [ngModel]="userInput()" 
+      (ngModelChange)="updateUserInput($event)"
+      (keypress)="onKeyPress($event)"
+      placeholder="พิมพ์ข้อความ..."
+      [disabled]="isLoading()">
+    <button class="send-btn" (click)="sendMessage()" [disabled]="!canSend()">
+      <span>➤</span>
+    </button>
+  </div>
+</div>

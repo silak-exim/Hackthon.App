@@ -1,0 +1,121 @@
+<div class="search-container">
+  <div class="tabs">
+    <button 
+      [class.active]="activeTab() === 'search'" 
+      (click)="switchTab('search')">
+      ค้นหาเอกสาร
+    </button>
+    <button 
+      [class.active]="activeTab() === 'documents'" 
+      (click)="switchTab('documents')">
+      เอกสารทั้งหมด
+    </button>
+  </div>
+
+  @if (activeTab() === 'search') {
+    <div class="search-section">
+      <div class="search-box-wrapper">
+        <div class="search-box">
+          <input 
+            type="text" 
+            [ngModel]="searchQuery()" 
+            (ngModelChange)="onSearchInput($event)"
+            (keypress)="onKeyPress($event)"
+            (focus)="showSuggestions.set(true)"
+            (blur)="hideSuggestionsDelayed()"
+            placeholder="พิมพ์คำค้นหาเอกสาร..."
+            [disabled]="isSearching()">
+          <button (click)="search()" [disabled]="!canSearch()">
+            @if (isSearching()) {
+              <span class="spinner"></span>
+            } @else {
+              🔍
+            }
+          </button>
+        </div>
+
+        <!-- Autocomplete Suggestions -->
+        @if (showSuggestions() && filteredSuggestions().length > 0) {
+          <div class="suggestions-dropdown">
+            @for (suggestion of filteredSuggestions(); track suggestion.id) {
+              <div class="suggestion-item" (mousedown)="selectSuggestion(suggestion)">
+                <span class="suggestion-icon">📄</span>
+                <div class="suggestion-content">
+                  <span class="suggestion-title">{{ suggestion.title }}</span>
+                  <span class="suggestion-filename">{{ suggestion.fileName }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <div class="error-message">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      @if (hasSearchResults()) {
+        <div class="results">
+          <h3>ผลการค้นหา ({{ searchResultsCount() }} รายการ)</h3>
+          @for (result of searchResults(); track trackByResultId($index, result)) {
+            <div class="result-item">
+              <div class="result-header">
+                <span class="title">{{ result.title }}</span>
+                <span class="score">Score: {{ result.score.toFixed(2) }}</span>
+              </div>
+              <p class="snippet">{{ result.snippet }}</p>
+            </div>
+          }
+        </div>
+      } @else if (!isSearching() && searchQuery() && !errorMessage()) {
+        <div class="no-results">
+          <span class="icon">📭</span>
+          <p>ไม่พบผลลัพธ์สำหรับ "{{ searchQuery() }}"</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (activeTab() === 'documents') {
+    <div class="documents-section">
+      @if (isLoadingDocs()) {
+        <div class="loading">
+          <span class="spinner large"></span>
+          <p>กำลังโหลดเอกสาร...</p>
+        </div>
+      } @else if (hasDocuments()) {
+        <div class="documents-list">
+          <h3>เอกสารทั้งหมด ({{ documentsCount() }} รายการ)</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>ชื่อเรื่อง</th>
+                <th>ชื่อไฟล์</th>
+                <th>การดำเนินการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (doc of allDocuments(); track trackByDocId($index, doc)) {
+                <tr>
+                  <td>{{ doc.title }}</td>
+                  <td>{{ doc.fileName }}</td>
+                  <td>
+                    <button class="delete-btn" (click)="deleteDocument(doc.id)">ลบ</button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <span class="icon">📄</span>
+          <p>ยังไม่มีเอกสาร</p>
+          <small>อัพโหลดเอกสารเพื่อเริ่มต้นใช้งาน</small>
+        </div>
+      }
+    </div>
+  }
+</div>

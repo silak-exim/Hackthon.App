@@ -1,0 +1,371 @@
+<div class="smart-form-container">
+  <!-- Header -->
+  <div class="form-header">
+    <h1>🤖 Smart Form Filler</h1>
+    <p>กรอกฟอร์มอัตโนมัติด้วย AI - เพียงอัพโหลดรูปบัตรประชาชนหรือเอกสาร</p>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="progress-steps">
+    <div class="step" [class.active]="currentStep() >= 1" [class.completed]="currentStep() > 1">
+      <div class="step-number">1</div>
+      <span>อัพโหลดเอกสาร</span>
+    </div>
+    <div class="step-line" [class.active]="currentStep() > 1"></div>
+    <div class="step" [class.active]="currentStep() >= 2" [class.completed]="currentStep() > 2">
+      <div class="step-number">2</div>
+      <span>ข้อมูลส่วนตัว</span>
+    </div>
+    <div class="step-line" [class.active]="currentStep() > 2"></div>
+    <div class="step" [class.active]="currentStep() >= 3">
+      <div class="step-number">3</div>
+      <span>ข้อมูลธุรกิจ</span>
+    </div>
+  </div>
+
+  <!-- Step 1: Upload -->
+  @if (currentStep() === 1) {
+    <div class="step-content">
+      <div class="upload-section">
+        <!-- Upload Header -->
+        <div class="upload-header">
+          <h2>📄 อัพโหลดเอกสารยืนยันตัวตน</h2>
+          <p>อัพโหลดได้สูงสุด 3 รูป เช่น บัตรประชาชน, หนังสือเดินทาง, ใบขับขี่</p>
+        </div>
+
+        <!-- Image Gallery -->
+        <div class="images-gallery">
+          @for (img of selectedImages(); track img.id) {
+            <div class="image-card">
+              <div class="image-wrapper">
+                <img [src]="img.image" [alt]="img.name">
+                <button class="btn-remove" (click)="removeImage(img.id)" title="ลบรูปนี้">✕</button>
+              </div>
+              <div class="image-info">
+                <span class="image-type">
+                  @switch (img.type) {
+                    @case ('id_card') { 🪪 บัตรประชาชน }
+                    @case ('passport') { 📕 หนังสือเดินทาง }
+                    @case ('driver_license') { 🚗 ใบขับขี่ }
+                    @default { 📄 {{ img.name }} }
+                  }
+                </span>
+              </div>
+            </div>
+          }
+
+          <!-- Add more images slot -->
+          @if (selectedImages().length < 3) {
+            <div class="image-card add-card">
+              <div class="add-placeholder" (click)="addFileInput.click()">
+                <span class="add-icon">➕</span>
+                <span>เพิ่มรูป</span>
+              </div>
+              <input #addFileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+            </div>
+          }
+        </div>
+
+        <!-- Upload Actions -->
+        @if (selectedImages().length === 0) {
+          <div class="upload-area">
+            <div class="upload-placeholder">
+              <span class="upload-icon">📤</span>
+              <h3>อัพโหลดรูปเอกสาร</h3>
+              <p>ลากไฟล์มาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
+              <p class="file-hint">รองรับ: JPG, PNG, WEBP (ขนาดไม่เกิน 10MB ต่อรูป)</p>
+              <div class="upload-actions">
+                <button class="btn-upload" (click)="fileInput.click()">
+                  <span>📁</span> เลือกไฟล์
+                </button>
+                <button class="btn-sample" (click)="useSampleImages()">
+                  <span>🎭</span> ใช้รูปตัวอย่าง 3 รูป
+                </button>
+              </div>
+              <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+            </div>
+          </div>
+        }
+
+        <!-- AI Analysis Section -->
+        @if (selectedImages().length > 0) {
+          <div class="ai-section">
+            <div class="selected-files-summary">
+              <span class="files-count">📎 เลือกแล้ว {{ selectedImages().length }} รูป</span>
+            </div>
+            
+            @if (!isProcessing() && !isFormFilled()) {
+              <button class="btn-analyze" (click)="processImages()">
+                <span class="ai-icon">🤖</span>
+                วิเคราะห์ด้วย AI
+              </button>
+              <p class="analyze-hint">AI จะอ่านข้อมูลจากทุกรูปและกรอกฟอร์มให้อัตโนมัติ</p>
+            }
+
+            @if (isProcessing()) {
+              <div class="processing-status">
+                <div class="spinner"></div>
+                <span>{{ processingStep() }}</span>
+              </div>
+            }
+
+            @if (isFormFilled()) {
+              <div class="success-message">
+                <span class="success-icon">✅</span>
+                <span>AI กรอกข้อมูลจาก {{ selectedImages().length }} รูปเรียบร้อยแล้ว!</span>
+              </div>
+              <button class="btn-next" (click)="nextStep()">
+                ดำเนินการต่อ <span>→</span>
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Features -->
+      <div class="features-grid">
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h4>รวดเร็ว</h4>
+          <p>กรอกฟอร์มภายใน 5 วินาที</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🎯</span>
+          <h4>แม่นยำ</h4>
+          <p>AI อ่านข้อมูลได้ถูกต้อง 99%</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔒</span>
+          <h4>ปลอดภัย</h4>
+          <p>ข้อมูลถูกเข้ารหัสทุกขั้นตอน</p>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Step 2: Personal Information -->
+  @if (currentStep() === 2) {
+    <div class="step-content">
+      <div class="form-section">
+        <h2>📝 ข้อมูลส่วนตัว</h2>
+        
+        <div class="form-grid">
+          <!-- Title & Name -->
+          <div class="form-group">
+            <label>คำนำหน้า</label>
+            <select [ngModel]="formData().titleName" (ngModelChange)="updateField('titleName', $event)">
+              <option value="">-- เลือก --</option>
+              @for (title of titleOptions; track title) {
+                <option [value]="title">{{ title }}</option>
+              }
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>ชื่อ (ภาษาไทย)</label>
+            <input type="text" [ngModel]="formData().firstName" 
+                   (ngModelChange)="updateField('firstName', $event)"
+                   [class.filled]="formData().firstName">
+          </div>
+          
+          <div class="form-group">
+            <label>นามสกุล (ภาษาไทย)</label>
+            <input type="text" [ngModel]="formData().lastName"
+                   (ngModelChange)="updateField('lastName', $event)"
+                   [class.filled]="formData().lastName">
+          </div>
+
+          <div class="form-group">
+            <label>First Name (English)</label>
+            <input type="text" [ngModel]="formData().firstNameEn"
+                   (ngModelChange)="updateField('firstNameEn', $event)"
+                   [class.filled]="formData().firstNameEn">
+          </div>
+          
+          <div class="form-group">
+            <label>Last Name (English)</label>
+            <input type="text" [ngModel]="formData().lastNameEn"
+                   (ngModelChange)="updateField('lastNameEn', $event)"
+                   [class.filled]="formData().lastNameEn">
+          </div>
+
+          <div class="form-group">
+            <label>เลขบัตรประชาชน</label>
+            <input type="text" [ngModel]="formData().idCard"
+                   (ngModelChange)="updateField('idCard', $event)"
+                   [class.filled]="formData().idCard"
+                   placeholder="x-xxxx-xxxxx-xx-x">
+          </div>
+
+          <div class="form-group">
+            <label>วันเกิด</label>
+            <input type="date" [ngModel]="formData().birthDate"
+                   (ngModelChange)="updateField('birthDate', $event)"
+                   [class.filled]="formData().birthDate">
+          </div>
+
+          <div class="form-group">
+            <label>สัญชาติ</label>
+            <input type="text" [ngModel]="formData().nationality"
+                   (ngModelChange)="updateField('nationality', $event)"
+                   [class.filled]="formData().nationality">
+          </div>
+        </div>
+
+        <h3>📞 ข้อมูลติดต่อ</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>เบอร์โทรศัพท์</label>
+            <input type="tel" [ngModel]="formData().phone"
+                   (ngModelChange)="updateField('phone', $event)"
+                   [class.filled]="formData().phone"
+                   placeholder="0xx-xxx-xxxx">
+          </div>
+          
+          <div class="form-group">
+            <label>อีเมล</label>
+            <input type="email" [ngModel]="formData().email"
+                   (ngModelChange)="updateField('email', $event)"
+                   [class.filled]="formData().email"
+                   placeholder="example@email.com">
+          </div>
+        </div>
+
+        <h3>🏠 ที่อยู่</h3>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>ที่อยู่</label>
+            <input type="text" [ngModel]="formData().address"
+                   (ngModelChange)="updateField('address', $event)"
+                   [class.filled]="formData().address"
+                   placeholder="บ้านเลขที่ หมู่ ซอย ถนน">
+          </div>
+          
+          <div class="form-group">
+            <label>แขวง/ตำบล</label>
+            <input type="text" [ngModel]="formData().subDistrict"
+                   (ngModelChange)="updateField('subDistrict', $event)"
+                   [class.filled]="formData().subDistrict">
+          </div>
+          
+          <div class="form-group">
+            <label>เขต/อำเภอ</label>
+            <input type="text" [ngModel]="formData().district"
+                   (ngModelChange)="updateField('district', $event)"
+                   [class.filled]="formData().district">
+          </div>
+          
+          <div class="form-group">
+            <label>จังหวัด</label>
+            <select [ngModel]="formData().province" (ngModelChange)="updateField('province', $event)">
+              <option value="">-- เลือกจังหวัด --</option>
+              @for (province of provinces; track province) {
+                <option [value]="province">{{ province }}</option>
+              }
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>รหัสไปรษณีย์</label>
+            <input type="text" [ngModel]="formData().postalCode"
+                   (ngModelChange)="updateField('postalCode', $event)"
+                   [class.filled]="formData().postalCode"
+                   placeholder="xxxxx">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-back" (click)="prevStep()">
+            <span>←</span> ย้อนกลับ
+          </button>
+          <button class="btn-next" (click)="nextStep()">
+            ถัดไป <span>→</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Step 3: Business Information -->
+  @if (currentStep() === 3) {
+    <div class="step-content">
+      <div class="form-section">
+        <h2>🏢 ข้อมูลธุรกิจ</h2>
+        
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>ชื่อบริษัท/กิจการ</label>
+            <input type="text" [ngModel]="formData().companyName"
+                   (ngModelChange)="updateField('companyName', $event)"
+                   [class.filled]="formData().companyName"
+                   placeholder="บริษัท ... จำกัด">
+          </div>
+          
+          <div class="form-group">
+            <label>ประเภทธุรกิจ</label>
+            <select [ngModel]="formData().businessType" (ngModelChange)="updateField('businessType', $event)">
+              <option value="">-- เลือกประเภท --</option>
+              @for (type of businessTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+              }
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label>รายได้ต่อปี (บาท)</label>
+            <input type="text" [ngModel]="formData().annualRevenue"
+                   (ngModelChange)="updateField('annualRevenue', $event)"
+                   [class.filled]="formData().annualRevenue"
+                   placeholder="เช่น 10,000,000">
+          </div>
+          
+          <div class="form-group full-width">
+            <label>ประเทศที่ส่งออก</label>
+            <input type="text" [ngModel]="formData().exportCountries"
+                   (ngModelChange)="updateField('exportCountries', $event)"
+                   [class.filled]="formData().exportCountries"
+                   placeholder="เช่น จีน, ญี่ปุ่น, สหรัฐอเมริกา">
+          </div>
+        </div>
+
+        <!-- Terms -->
+        <div class="terms-section">
+          <label class="checkbox-label">
+            <input type="checkbox">
+            <span>ข้าพเจ้ายอมรับ<a href="#">เงื่อนไขการใช้บริการ</a>และ<a href="#">นโยบายความเป็นส่วนตัว</a></span>
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn-back" (click)="prevStep()">
+            <span>←</span> ย้อนกลับ
+          </button>
+          <button class="btn-submit" (click)="submitForm()">
+            <span>✓</span> สมัครสมาชิก
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary Card -->
+      <div class="summary-card">
+        <h3>📋 สรุปข้อมูล</h3>
+        <div class="summary-item">
+          <span class="label">ชื่อ-นามสกุล:</span>
+          <span class="value">{{ formData().titleName }} {{ formData().firstName }} {{ formData().lastName }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">เลขบัตรประชาชน:</span>
+          <span class="value">{{ formData().idCard }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">อีเมล:</span>
+          <span class="value">{{ formData().email }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="label">บริษัท:</span>
+          <span class="value">{{ formData().companyName }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

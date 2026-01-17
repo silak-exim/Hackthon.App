@@ -1,0 +1,74 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <h2>AI Assistant</h2>
+    <div class="header-actions">
+      <button class="context-toggle" (click)="toggleContext()">
+        {{ showContextInput() ? 'ซ่อน Context' : 'เพิ่ม Context' }}
+      </button>
+      <button class="clear-btn" (click)="clearChat()" [disabled]="!hasMessages()">
+        ล้างการสนทนา
+      </button>
+    </div>
+  </div>
+
+  @if (showContextInput()) {
+    <div class="context-section">
+      <label>Context (ข้อมูลเพิ่มเติมสำหรับโมเดล)</label>
+      <textarea 
+        [ngModel]="context()" 
+        (ngModelChange)="updateContext($event)"
+        placeholder="ใส่ข้อมูลเพิ่มเติมที่ต้องการให้โมเดลใช้ในการตอบ..."
+        rows="3">
+      </textarea>
+    </div>
+  }
+
+  <div class="messages-container">
+    @if (!hasMessages()) {
+      <div class="empty-state">
+        <span class="icon">💬</span>
+        <p>ยินดีต้อนรับสู่ EXIM Bank AI</p>
+        <small>พิมพ์คำถามด้านล่างเพื่อเริ่มต้นสนทนา</small>
+      </div>
+    }
+
+    @for (msg of messages(); track trackByTimestamp($index, msg)) {
+      <div class="message" [class.user]="msg.role === 'user'" [class.assistant]="msg.role === 'assistant'">
+        <div class="avatar">
+          {{ msg.role === 'user' ? '👤' : '🏦' }}
+        </div>
+        <div class="content">
+          <div class="text" [innerHTML]="msg.content"></div>
+          <div class="time">{{ msg.timestamp | date:'HH:mm' }}</div>
+        </div>
+      </div>
+    }
+
+    @if (isLoading()) {
+      <div class="message assistant">
+        <div class="avatar">🏦</div>
+        <div class="content">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="input-container">
+    <textarea 
+      [ngModel]="userInput()" 
+      (ngModelChange)="updateUserInput($event)"
+      (keypress)="onKeyPress($event)"
+      placeholder="พิมพ์คำถามของคุณ..."
+      rows="1"
+      [disabled]="isLoading()">
+    </textarea>
+    <button class="send-btn" (click)="sendMessage()" [disabled]="!canSend()">
+      ➤
+    </button>
+  </div>
+</div>

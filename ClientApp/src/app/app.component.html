@@ -1,0 +1,98 @@
+<div class="app-container">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <a routerLink="/dashboard" class="logo-container">
+        <div class="logo-icon">E</div>
+        <div class="logo-text">
+          <span class="bank-name">EXIM BANK</span>
+          <span class="bank-tagline">ธนาคารเพื่อการส่งออกและนำเข้า</span>
+        </div>
+      </a>
+    </div>
+    <ul class="nav-links">
+      <li>
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <span class="nav-text">หน้าหลัก</span>
+        </a>
+      </li>
+      <!-- Hidden: บริการ - ยังไม่พร้อมใช้งาน -->
+      <!-- Hidden: อัตราแลกเปลี่ยน - ยังไม่พร้อมใช้งาน -->
+      <li>
+        <a routerLink="/upload" routerLinkActive="active">
+          <span class="nav-text">อัพโหลดเอกสาร</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/search" routerLinkActive="active">
+          <span class="nav-text">ค้นหา</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="/register" routerLinkActive="active">
+          <span class="nav-text">🤖 Smart Form</span>
+        </a>
+      </li>
+      <!-- <li class="dropdown">
+        <a href="#" class="dropdown-toggle">
+          <span class="nav-text">เกี่ยวกับเรา</span>
+          <span class="arrow">▾</span>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a href="#">ประวัติธนาคาร</a></li>
+          <li><a href="#">คณะผู้บริหาร</a></li>
+          <li><a href="#">ติดต่อเรา</a></li>
+        </ul>
+      </li> -->
+    </ul>
+    <!-- <div class="nav-actions">
+      <button class="btn-outline">เข้าสู่ระบบ</button>
+      <a routerLink="/register" class="btn-primary">สมัครสมาชิก</a>
+    </div> -->
+  </nav>
+  
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+  
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-section">
+        <h4>ติดต่อเรา</h4>
+        <p>1193 อาคารเอ็กซิมแบงค์</p>
+        <p>ถ.พหลโยธิน แขวงสามเสนใน</p>
+        <p>เขตพญาไท กรุงเทพฯ 10400</p>
+        <p>โทร: 0 2271 3700</p>
+      </div>
+      <div class="footer-section">
+        <h4>บริการ</h4>
+        <a href="#">สินเชื่อส่งออก</a>
+        <a href="#">สินเชื่อนำเข้า</a>
+        <a href="#">Letter of Credit</a>
+        <a href="#">ประกันการส่งออก</a>
+      </div>
+      <div class="footer-section">
+        <h4>ข้อมูลองค์กร</h4>
+        <a href="#">เกี่ยวกับธนาคาร</a>
+        <a href="#">ข่าวสาร</a>
+        <a href="#">ร่วมงานกับเรา</a>
+        <a href="#">CSR</a>
+      </div>
+      <div class="footer-section">
+        <h4>ช่องทางติดตาม</h4>
+        <div class="social-links">
+          <a href="#" class="social-icon">📘</a>
+          <a href="#" class="social-icon">📷</a>
+          <a href="#" class="social-icon">🐦</a>
+          <a href="#" class="social-icon">📺</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 EXIM Bank - ธนาคารเพื่อการส่งออกและนำเข้าแห่งประเทศไทย. All rights reserved.</span>
+      <span class="powered">Powered by Azure AI Foundry</span>
+    </div>
+  </footer>
+  
+  <!-- Floating Chat Widget -->
+  <app-chat-widget></app-chat-widget>
+</div>
