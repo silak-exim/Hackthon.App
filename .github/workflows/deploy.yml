@@ -79,8 +79,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet sonarscanner begin \
-            /k:"supakornp08_hackaton-poc-group4" \
-            /o:"supakornp08" \
+            /k:"silak-exim_Hackthon.App" \
+            /o:"silak-exim" \
             /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
