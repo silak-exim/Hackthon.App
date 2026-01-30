@@ -25,7 +25,7 @@ public class UploadController : ControllerBase
     /// Upload one or more documents
     /// </summary>
     [HttpPost]
-    [RequestSizeLimit(50 * 1024 * 1024)] // 50MB limit
+    [RequestSizeLimit(20 * 1024 * 1024)] // 20MB limit
     [ProducesResponseType(typeof(UploadResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Upload([FromForm] List<IFormFile> files, CancellationToken cancellationToken)
