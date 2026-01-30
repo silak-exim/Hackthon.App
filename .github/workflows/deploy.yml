@@ -9,6 +9,10 @@ on:
       - 'deploy.yml'
   workflow_dispatch:
 
+env:
+  DOTNET_VERSION: '10.0.x'
+  WORKING_DIRECTORY: './FoundryDataUploader'
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -41,6 +45,52 @@ jobs:
           push: true
           tags: |
             eximhackathon2026.azurecr.io/hackathon/app-api:${{ github.sha }}
+
+  security-scan:
+    name: Security Scan (SonarCloud)
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install SonarScanner
+        run: dotnet tool install --global dotnet-sonarscanner
+
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Build and analyze with SonarCloud
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          dotnet sonarscanner begin \
+            /k:"supakornp08_hackaton-poc-group4" \
+            /o:"supakornp08" \
+            /d:sonar.token="$SONAR_TOKEN" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml"
+
+          dotnet build --configuration Release
+
+          dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+
 
       # ... ต่อจากขั้นตอน Build and push Docker image ...
 
